@@ -1,4 +1,10 @@
 import { initializeApp } from "firebase/app";
+import {
+  browserLocalPersistence,
+  connectAuthEmulator,
+  getAuth,
+  setPersistence,
+} from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -13,9 +19,12 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
+const auth = getAuth(app);
+setPersistence(auth, browserLocalPersistence);
 
 if (import.meta.env.DEV) {
   connectFirestoreEmulator(firestore, "localhost", 8080);
+  connectAuthEmulator(auth, "http://localhost:9099");
 }
 
-export { app, firestore };
+export { app, auth, firestore };
