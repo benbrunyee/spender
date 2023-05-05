@@ -24,7 +24,7 @@
 
 <svelte:head>
   <title>Spender</title>
-  <link rel="apple-touch-icon" href="iphone-icon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
 </svelte:head>
 {#if !$initializing}
   <slot />
