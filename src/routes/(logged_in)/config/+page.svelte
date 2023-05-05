@@ -55,23 +55,33 @@
 <div class="flex flex-col p-2">
   <form class="card flex flex-col gap-2 p-4" on:submit={submit}>
     <label class="label">
-      <span>Amount</span>
-      <input bind:value={inputMoney} class="input" type="number" step="0.01" />
+      <span>I currently have...</span>
+      <div class="input-group input-group-divider grid-cols-[auto_1fr]">
+        <div class="input-group-shim">£</div>
+        <input bind:value={inputMoney} class="input" type="number" step="0.01" />
+      </div>
     </label>
     <label class="label">
-      <span>Debits</span>
-      <input bind:value={inputDebits} class="input" type="number" step="0.01" />
+      <span>excluding...</span>
+      <div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
+        <div class="input-group-shim">£</div>
+        <input bind:value={inputDebits} class="input" type="number" step="0.01" />
+        <div class="input-group-shim">debits</div>
+      </div>
     </label>
     <label class="label">
-      <span>Start date</span>
+      <span>to spend over...</span>
+      <div class="input-group input-group-divider grid-cols-[1fr_auto]">
+        <input bind:value={inputDayCount} type="number" class="input" />
+        <div class="input-group-shim"><span>days</span></div>
+      </div>
+    </label>
+    <label class="label">
+      <span>days, starting from...</span>
       <input type="date" class="input" bind:value={inputDate} />
     </label>
     <label class="label">
-      <span>Day Count</span>
-      <input bind:value={inputDayCount} type="number" class="input" />
-    </label>
-    <label class="label">
-      <span>Internal Note</span>
+      <span>Notes</span>
       <textarea class="textarea" rows="4" bind:value={inputInternalNote} placeholder="Notes" />
     </label>
     <button class="btn variant-filled" type="submit" disabled={isSaving}>

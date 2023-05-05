@@ -18,11 +18,7 @@
 
 <div class="flex h-full flex-col items-center p-2">
   <div class="my-8 flex items-end gap-2 p-4">
-    <h1
-      class="unstyled select-none bg-gradient-to-tr from-primary-400 to-secondary-300 box-decoration-clone bg-clip-text text-5xl font-black text-transparent lg:text-7xl {error
-        ? 'text-red-500'
-        : ''}"
-    >
+    <h1 class="unstyled select-none text-5xl font-black lg:text-7xl {error ? 'text-red-500' : ''}">
       {error ? error : $loading ? "Loading..." : `£${isNaN(perDayAmount) ? 0 : perDayAmount}`}
     </h1>
     {#if !error && !$loading}
