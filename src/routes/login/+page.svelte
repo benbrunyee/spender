@@ -1,8 +1,15 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import Icon from "@iconify/svelte";
   import { Tab, TabGroup, toastStore } from "@skeletonlabs/skeleton";
-  import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-  import { auth } from "../../firebase";
+  import {
+    createUserWithEmailAndPassword,
+    getRedirectResult,
+    signInWithEmailAndPassword,
+    signInWithRedirect,
+  } from "firebase/auth";
+  import { onMount } from "svelte";
+  import { auth, googleProvider } from "../../firebase";
 
   let email = "";
   let password = "";
@@ -74,6 +81,30 @@
       }
     }
   }
+
+  async function googleSignIn() {
+    try {
+      await signInWithRedirect(auth, googleProvider);
+    } catch (e) {
+      console.error(e);
+      toastStore.trigger({
+        message: "Error signing in with Google",
+        background: "variant-filled-error",
+      });
+    }
+  }
+
+  onMount(async () => {
+    // After returning from the redirect when your app initializes you can obtain the result
+    const result = await getRedirectResult(auth);
+    if (result) {
+      if (!result.user.email) {
+        throw new Error("No user found");
+      }
+
+      goto("/");
+    }
+  });
 </script>
 
 <div class="flex h-full items-center justify-center">
@@ -112,8 +143,18 @@
         autocomplete="current-password"
       />
     </label>
-    <button disabled={isSubmitting} class="btn variant-filled" type="submit"
-      >{isSubmitting ? "Loading..." : type === "login" ? "Login" : "Sign Up"}</button
-    >
+    <div class="flex gap-2">
+      <button
+        class="btn variant-ghost"
+        on:click={() => {
+          googleSignIn();
+        }}
+      >
+        <Icon icon="akar-icons:google-fill" />
+      </button>
+      <button disabled={isSubmitting} class="btn variant-filled flex-1" type="submit"
+        >{isSubmitting ? "Loading..." : type === "login" ? "Login" : "Sign Up"}</button
+      >
+    </div>
   </form>
 </div>

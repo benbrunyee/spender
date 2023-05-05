@@ -1,11 +1,14 @@
 import { initializeApp } from "firebase/app";
 import {
+  GoogleAuthProvider,
   browserLocalPersistence,
   connectAuthEmulator,
   getAuth,
   setPersistence,
 } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+
+const googleProvider = new GoogleAuthProvider();
 
 const firebaseConfig = {
   apiKey: "AIzaSyDXhUhH15Lzz4hqsgvPjfoJimZjRoWE8Zo",
@@ -20,6 +23,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
 const auth = getAuth(app);
+auth.useDeviceLanguage();
 setPersistence(auth, browserLocalPersistence);
 
 if (import.meta.env.DEV) {
@@ -27,4 +31,4 @@ if (import.meta.env.DEV) {
   connectAuthEmulator(auth, "http://localhost:9099");
 }
 
-export { app, auth, firestore };
+export { app, auth, firestore, googleProvider };
