@@ -22,6 +22,9 @@
   });
 </script>
 
+<svelte:head>
+  <title>Spender</title>
+</svelte:head>
 {#if !$initializing}
   <slot />
 {/if}
