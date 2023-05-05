@@ -12,7 +12,7 @@ const googleProvider = new GoogleAuthProvider();
 
 const firebaseConfig = {
   apiKey: "AIzaSyDXhUhH15Lzz4hqsgvPjfoJimZjRoWE8Zo",
-  authDomain: "spender-7e181.firebaseapp.com",
+  authDomain: "spender-7e181.web.app",
   projectId: "spender-7e181",
   storageBucket: "spender-7e181.appspot.com",
   messagingSenderId: "578896377696",

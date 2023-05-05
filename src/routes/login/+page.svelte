@@ -146,6 +146,7 @@
     <div class="flex gap-2">
       <button
         class="btn variant-ghost"
+        type="button"
         on:click={() => {
           googleSignIn();
         }}
