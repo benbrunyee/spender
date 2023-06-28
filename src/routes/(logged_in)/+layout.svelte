@@ -14,8 +14,8 @@
   import { goto } from "$app/navigation";
   import { doc, DocumentSnapshot, getDoc } from "firebase/firestore";
   import { onMount } from "svelte";
+  import Navigation from "../../compontents/Navigation.svelte";
   import { auth, firestore } from "../../firebase";
-  import Navigation from "../../lib/Navigation.svelte";
   import dayCount from "../../stores/dayCount";
   import daysPast from "../../stores/daysPast";
   import daysRemaining from "../../stores/daysRemaining";
@@ -23,6 +23,7 @@
   import internalNote from "../../stores/internalNote";
   import loading from "../../stores/loading";
   import money from "../../stores/money";
+  import monzo from "../../stores/monzo";
   import startDate from "../../stores/startDate";
   import tilePage from "../../stores/tilePage";
 
@@ -51,7 +52,7 @@
 
     let docRef: DocumentSnapshot | undefined;
     try {
-      docRef = await getDoc(doc(firestore, "data", "data"));
+      docRef = await getDoc(doc(firestore, "data", auth.currentUser.uid));
     } catch (e) {
       console.error(e);
     }
@@ -69,6 +70,7 @@
     $debits = data.debits ?? 0;
     $dayCount = data.dayCount ?? 0;
     $internalNote = data.internalNote ?? "";
+    $monzo.accessToken = data.monzoAccessToken ?? "";
 
     $loading = false;
   });

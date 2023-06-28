@@ -6,6 +6,9 @@ build
 .env
 .env.*
 !.env.example
+src/service-worker.js
+src/service-worker.ts
+src/service-worker.d.ts
 
 # Ignore files for PNPM, NPM and YARN
 pnpm-lock.yaml
