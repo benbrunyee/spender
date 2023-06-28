@@ -3,11 +3,12 @@
   import Icon from "@iconify/svelte";
   import { doc, setDoc } from "firebase/firestore";
   import { onMount } from "svelte";
-  import { firestore } from "../../../firebase";
+  import { auth, firestore } from "../../../firebase";
   import dayCount from "../../../stores/dayCount";
   import debits from "../../../stores/debits";
   import internalNote from "../../../stores/internalNote";
   import money from "../../../stores/money";
+  import monzo from "../../../stores/monzo";
   import startDate from "../../../stores/startDate";
 
   let isSaving = false;
@@ -27,6 +28,11 @@
   });
 
   function submit() {
+    if (!auth.currentUser?.uid) {
+      console.warn("User not logged in");
+      return;
+    }
+
     isSaving = true;
 
     $money = inputMoney;
@@ -35,7 +41,7 @@
     $dayCount = inputDayCount;
     $internalNote = inputInternalNote;
 
-    setDoc(doc(firestore, "data", "data"), {
+    setDoc(doc(firestore, "data", auth.currentUser.uid), {
       money: inputMoney,
       debits: inputDebits,
       startDate: new Date(inputDate).toUTCString(),
@@ -58,7 +64,13 @@
       <span>I currently have...</span>
       <div class="input-group input-group-divider grid-cols-[auto_1fr]">
         <div class="input-group-shim">£</div>
-        <input bind:value={inputMoney} class="input" type="number" step="0.01" />
+        <input
+          bind:value={inputMoney}
+          class="input"
+          type="number"
+          step="0.01"
+          disabled={$monzo.isAuthenticated}
+        />
       </div>
     </label>
     <label class="label">

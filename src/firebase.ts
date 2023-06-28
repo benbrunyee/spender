@@ -7,6 +7,7 @@ import {
   setPersistence,
 } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -22,6 +23,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const firestore = getFirestore(app);
+const functions = getFunctions(app);
 const auth = getAuth(app);
 auth.useDeviceLanguage();
 setPersistence(auth, browserLocalPersistence);
@@ -29,6 +31,7 @@ setPersistence(auth, browserLocalPersistence);
 if (import.meta.env.DEV) {
   connectFirestoreEmulator(firestore, "localhost", 8080);
   connectAuthEmulator(auth, "http://localhost:9099");
+  connectFunctionsEmulator(functions, "localhost", 5001);
 }
 
-export { app, auth, firestore, googleProvider };
+export { app, auth, firestore, functions, googleProvider };
