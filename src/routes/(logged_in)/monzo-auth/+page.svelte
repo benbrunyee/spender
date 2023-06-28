@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
   import { page } from "$app/stores";
   import { redirect } from "@sveltejs/kit";
   import { httpsCallable } from "firebase/functions";
@@ -68,12 +67,7 @@
     </h1>
     {#if !loading}
       <p class="text-center">{success ? "Now, accept the Monzo request" : "Please try again..."}</p>
-      <a
-        class="btn variant-ghost w-full"
-        on:click={() => {
-          goto("/");
-        }}>Done.</a
-      >
+      <a class="btn variant-ghost w-full" href="/">Done.</a>
     {/if}
   </div>
 </div>
