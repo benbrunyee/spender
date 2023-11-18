@@ -103,6 +103,8 @@
       }
 
       goto("/");
+    } else {
+      console.log("No redirect result");
     }
   });
 </script>
