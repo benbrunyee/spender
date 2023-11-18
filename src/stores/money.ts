@@ -1,4 +1,4 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { writable } from "svelte/store";
 import { auth, firestore } from "../firebase";
 
@@ -17,9 +17,15 @@ const moneyStore = () => {
     }
 
     try {
-      await updateDoc(doc(firestore, "data", auth.currentUser.uid), {
-        money: money,
-      });
+      await setDoc(
+        doc(firestore, "data", auth.currentUser.uid),
+        {
+          money: money,
+        },
+        {
+          merge: true,
+        },
+      );
     } catch (e) {
       console.error(e);
       return;
