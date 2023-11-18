@@ -7,14 +7,25 @@
   import checkMonzoAuthentication from "../../../lib/checkMonzoAuthentication";
   import createMonzoRedirectLink from "../../../lib/createMonzoRedirectLink";
   import monzo from "../../../stores/monzo";
+  import { monzoState } from "../../../stores/monzoState";
 
   let success = false;
   let loading = true;
 
   onMount(() => {
-    const authCode = $page.url.searchParams.get("code");
-    handleCode(authCode);
+    const state = $page.url.searchParams.get("state");
+    if (state && satisfiesState(state)) {
+      const authCode = $page.url.searchParams.get("code");
+      handleCode(authCode);
+    } else {
+      console.error("State does not match");
+      loading = false;
+    }
   });
+
+  function satisfiesState(state: string) {
+    return state === $monzoState.state;
+  }
 
   async function handleCode(authCode: string | null) {
     if (!authCode) {

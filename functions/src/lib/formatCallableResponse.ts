@@ -1,6 +1,7 @@
 import * as logger from "firebase-functions/logger";
+import { FunctionReturnData } from "./types";
 
-export default (fn: (request: any) => Promise<any>) => {
+export default (fn: (request: any) => Promise<FunctionReturnData>) => {
   return async (request: any) => {
     try {
       const result = await fn(request);

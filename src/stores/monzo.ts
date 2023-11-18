@@ -1,6 +1,6 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { httpsCallable } from "firebase/functions";
 import { writable } from "svelte/store";
-import { auth, firestore } from "../firebase";
+import { auth, functions } from "../firebase";
 
 const monzoStore = () => {
   const store = writable({
@@ -18,9 +18,10 @@ const monzoStore = () => {
     }
 
     try {
-      await updateDoc(doc(firestore, "data", auth.currentUser.uid), {
-        monzoAccessToken: accessToken,
-      });
+      await httpsCallable<{ tokenName: string; accessToken: string }>(
+        functions,
+        "saveAccessToken",
+      )({ tokenName: "monzoAccessToken", accessToken });
     } catch (e) {
       console.error(e);
       return;

@@ -1,7 +1,9 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
   import Icon from "@iconify/svelte";
   import { onMount } from "svelte";
   import createMonzoAuthLink from "../../lib/createMonzoAuthLink";
+  import createNewMonzoState from "../../lib/createNewMonzoState";
   import fetchMonzo from "../../lib/fetchMonzo";
   import daysPast from "../../stores/daysPast";
   import daysRemaining from "../../stores/daysRemaining";
@@ -108,9 +110,16 @@
 </script>
 
 <div class="flex h-full flex-col items-center p-2">
-  <a class="btn variant-ghost mt-2 w-full" href={createMonzoAuthLink()}>
+  <button
+    class="btn variant-ghost mt-2 w-full"
+    on:click={() => {
+      // Generate a new state and redirect to that URL
+      const state = createNewMonzoState();
+      goto(createMonzoAuthLink(state));
+    }}
+  >
     <Icon icon="akar-icons:bank" />
-    <span>Authorize Monzo</span></a
+    <span>Authorize Monzo</span></button
   >
 
   <div class="my-8 flex items-end gap-2 p-4">

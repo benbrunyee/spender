@@ -1,11 +1,10 @@
 import * as logger from "firebase-functions/logger";
+import getUserRefreshToken from "../lib/getUserRefreshToken";
 import monzoApiUri from "../lib/monzoApiUri";
 import processTokenResponse from "../lib/processTokenResponse";
 import { FunctionReturnData, Provider } from "../lib/types";
 
 export default async (request: any): Promise<FunctionReturnData> => {
-  const authorizationCode = request.data.code;
-  const redirectUri = request.data.redirectUri;
   const uid = request.auth?.uid;
 
   if (!uid) {
@@ -15,27 +14,24 @@ export default async (request: any): Promise<FunctionReturnData> => {
     };
   }
 
-  if (!authorizationCode) {
-    return {
-      success: false,
-      msg: "No authorization code provided",
-    };
-  }
+  let refreshToken = null;
 
-  if (!redirectUri) {
+  try {
+    refreshToken = await getUserRefreshToken(uid, "monzo");
+  } catch (e) {
     return {
+      error: e,
       success: false,
-      msg: "No redirect URI provided",
+      msg: "Could not get refresh token",
     };
   }
 
   const monzoExchangeCodeUrl = monzoApiUri + "/oauth2/token";
   const postFormData = {
-    grant_type: "authorization_code",
+    grant_type: "refresh_token",
     client_id: process.env.MONZO_CLIENT_ID,
     client_secret: process.env.MONZO_CLIENT_SECRET,
-    redirect_uri: redirectUri,
-    code: authorizationCode,
+    refresh_token: refreshToken,
   };
 
   logger.debug("POST form data: " + JSON.stringify(postFormData));
@@ -60,10 +56,17 @@ export default async (request: any): Promise<FunctionReturnData> => {
     };
   }
 
-  if (!json?.access_token) {
+  if (!json.access_token) {
     return {
       success: false,
-      msg: "Failed to exchange authorization code for access token",
+      msg: "No access token in response",
+    };
+  }
+
+  if (!json.refresh_token) {
+    return {
+      success: false,
+      msg: "No refresh token in response",
     };
   }
 
@@ -84,7 +87,7 @@ export default async (request: any): Promise<FunctionReturnData> => {
 
   return {
     success: true,
-    msg: "Successfully exchanged authorization code for access token",
+    msg: "Successfully exchanged refresh token for access token",
     body: {
       monzoAccessToken: accessToken,
       monzoAccessTokenExpiresIn: accessTokenExpiresIn,
