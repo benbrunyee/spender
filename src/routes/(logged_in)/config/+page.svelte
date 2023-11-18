@@ -41,13 +41,19 @@
     $dayCount = inputDayCount;
     $internalNote = inputInternalNote;
 
-    setDoc(doc(firestore, "data", auth.currentUser.uid), {
-      money: inputMoney,
-      debits: inputDebits,
-      startDate: new Date(inputDate).toUTCString(),
-      dayCount: inputDayCount,
-      internalNote: inputInternalNote,
-    })
+    setDoc(
+      doc(firestore, "data", auth.currentUser.uid),
+      {
+        money: inputMoney,
+        debits: inputDebits,
+        startDate: new Date(inputDate).toUTCString(),
+        dayCount: inputDayCount,
+        internalNote: inputInternalNote,
+      },
+      {
+        merge: true,
+      },
+    )
       .catch((err) => {
         err = "Failed to save data";
       })

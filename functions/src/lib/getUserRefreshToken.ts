@@ -9,9 +9,11 @@ export default async (uid: string, tokenName: string) => {
 
   const userData = userDoc.data();
 
-  if (!userData?.refreshTokens?.[tokenName]) {
+  console.log(userData);
+
+  if (!userData?.accessTokens?.[tokenName].refreshToken) {
     throw new Error("No refresh token found");
   }
 
-  return userData.refreshTokens[tokenName];
+  return userData.accessTokens[tokenName].refreshToken;
 };

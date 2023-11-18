@@ -13,9 +13,10 @@
 
   import { goto } from "$app/navigation";
   import { doc, DocumentSnapshot, getDoc } from "firebase/firestore";
+  import { httpsCallable } from "firebase/functions";
   import { onMount } from "svelte";
   import Navigation from "../../compontents/Navigation.svelte";
-  import { auth, firestore } from "../../firebase";
+  import { auth, firestore, functions } from "../../firebase";
   import dayCount from "../../stores/dayCount";
   import daysPast from "../../stores/daysPast";
   import daysRemaining from "../../stores/daysRemaining";
@@ -62,6 +63,19 @@
       return;
     }
 
+    let monzoAccessToken = null;
+    try {
+      const monzoAccessTokenCall = await httpsCallable<null, any>(
+        functions,
+        "getMonzoAccessToken",
+      )();
+      monzoAccessToken = monzoAccessTokenCall.data?.body?.accessToken;
+    } catch (e) {
+      console.error(e);
+    }
+
+    console.log(monzoAccessToken);
+
     const data = docRef.data();
 
     $money = data.money ?? 0;
@@ -70,7 +84,8 @@
     $debits = data.debits ?? 0;
     $dayCount = data.dayCount ?? 0;
     $internalNote = data.internalNote ?? "";
-    $monzo.accessToken = data.monzoAccessToken ?? "";
+    monzo.updateAccessToken(monzoAccessToken ?? "");
+    monzo.updateExpiry(data.accessTokens?.monzo.expiry ?? null);
 
     $loading = false;
   });

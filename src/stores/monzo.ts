@@ -1,10 +1,16 @@
-import { httpsCallable } from "firebase/functions";
+import type { Timestamp } from "firebase/firestore";
 import { writable } from "svelte/store";
-import { auth, functions } from "../firebase";
+import { auth } from "../firebase";
 
 const monzoStore = () => {
-  const store = writable({
+  const store = writable<{
+    accessToken: string;
+    expiry: Timestamp | null;
+    code: string;
+    isAuthenticated: boolean;
+  }>({
     accessToken: "",
+    expiry: null,
     code: "",
     isAuthenticated: false,
   });
@@ -16,26 +22,21 @@ const monzoStore = () => {
       console.warn("No user logged in, cannot update access token");
       return;
     }
-
-    try {
-      await httpsCallable<{ tokenName: string; accessToken: string }>(
-        functions,
-        "saveAccessToken",
-      )({ tokenName: "monzoAccessToken", accessToken });
-    } catch (e) {
-      console.error(e);
-      return;
-    }
   };
 
   const updateCode = (code: string) => {
     store.update((cur) => ({ ...cur, code: code }));
   };
 
+  const updateExpiry = (expiry: Timestamp) => {
+    store.update((cur) => ({ ...cur, expiry: expiry }));
+  };
+
   return {
     ...store,
     updateAccessToken,
     updateCode,
+    updateExpiry,
   };
 };
 

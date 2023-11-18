@@ -4,7 +4,7 @@ import fetchMonzo from "./fetchMonzo";
 export default async () => {
   // Check if we are already logged in
   const loggedInResponse = await fetchMonzo("/ping/whoami");
-  const loggedInJson = await loggedInResponse.json();
+  const loggedInJson = await loggedInResponse?.json();
   console.debug("Ping JSON response", loggedInJson);
 
   if (loggedInJson?.authenticated) {

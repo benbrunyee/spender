@@ -62,7 +62,7 @@
       return;
     }
 
-    if (!accountsResponse.ok) {
+    if (!accountsResponse?.ok) {
       error = "Failed to load account";
       return;
     }
