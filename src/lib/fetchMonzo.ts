@@ -9,13 +9,12 @@ monzo.subscribe((cur) => {
   }
 });
 
-export default (endpoint: string, accessToken?: string, params?: object) => {
+export default async (endpoint: string, accessToken?: string, params?: object) => {
   if (tokenExpired) {
     console.log("Token expired, refreshing");
-    refreshMonzoAccessToken().then((newAccessToken) => {
-      tokenExpired = false;
-      return createMonzoCall(endpoint, newAccessToken, params);
-    });
+    const newAccessToken = await refreshMonzoAccessToken()
+    tokenExpired = false;
+    return createMonzoCall(endpoint, newAccessToken, params);
   } else {
     return createMonzoCall(endpoint, accessToken, params);
   }
